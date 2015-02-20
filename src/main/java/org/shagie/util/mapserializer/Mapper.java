@@ -22,6 +22,15 @@ public class Mapper {
 
         for (Field f : param.getClass().getDeclaredFields()) {
             if(f.getAnnotation(MapperIgnore.class) != null) { continue; }
+
+            final String name;
+            MapperRename renameAnno = f.getAnnotation(MapperRename.class);
+            if(renameAnno != null) {
+                name = renameAnno.value();
+            } else {
+                name = f.getName();
+            }
+
             final boolean access = f.isAccessible();
             if (f.getType().isPrimitive()) {
                 Object wrapped = null;
@@ -47,7 +56,7 @@ public class Mapper {
                         wrapped = f.getDouble(param);
                     }
 
-                    retVal.put(f.getName(), wrapped);
+                    retVal.put(name, wrapped);
                 } catch (IllegalAccessException e) {
                     LOG.error("Illegal access for field " + f.getName(), e);
                 } finally {
@@ -57,7 +66,7 @@ public class Mapper {
             } else {
                 try {
                     f.setAccessible(true);
-                    retVal.put(f.getName(), f.get(param));
+                    retVal.put(name, f.get(param));
                 } catch (IllegalAccessException e) {
                     LOG.error("Illegal access for field " + f.getName(), e);
                 } finally {

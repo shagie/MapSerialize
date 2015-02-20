@@ -60,4 +60,29 @@ public class MapperTest {
         assertEquals(result.get("field1"), 1);
     }
 
+
+    @Test
+    public void testRename() {
+        class TestInner {
+            int field1;
+
+            @MapperRename("newName")
+            String field2;
+
+            public TestInner(int arg1, String arg2) {
+                field1 = arg1;
+                field2 = arg2;
+            }
+        }
+
+        Mapper m = new Mapper();
+        Map<String, Object> result = m.toMap(new TestInner(1, "foo"));
+
+        assertTrue(result.containsKey("field1"));
+        assertFalse(result.containsKey("field2"), "renamed field found");
+        assertTrue(result.containsKey("newName"), "renamed field not found");
+        assertEquals(result.get("newName"), "foo", "new name not found");
+        assertEquals(result.get("field1"), 1);
+    }
+
 }
