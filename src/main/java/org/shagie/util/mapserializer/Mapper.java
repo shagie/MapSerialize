@@ -21,6 +21,7 @@ public class Mapper {
         Map<String, Object> retVal = new LinkedHashMap<String, Object>();
 
         for (Field f : param.getClass().getDeclaredFields()) {
+            if(f.getAnnotation(MapperIgnore.class) != null) { continue; }
             final boolean access = f.isAccessible();
             if (f.getType().isPrimitive()) {
                 Object wrapped = null;
