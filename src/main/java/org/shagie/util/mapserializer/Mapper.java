@@ -1,10 +1,18 @@
 package org.shagie.util.mapserializer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Mapper {
+    private static final Logger LOG = LoggerFactory.getLogger(Mapper.class);
+
+    public Mapper() {
+    }
+
     public Map<String, Object> toMap(Object param) {
         if (param == null) {
             return null;
@@ -13,10 +21,10 @@ public class Mapper {
         Map<String, Object> retVal = new LinkedHashMap<String, Object>();
 
         for (Field f : param.getClass().getDeclaredFields()) {
-            boolean access = f.isAccessible();
+            final boolean access = f.isAccessible();
             if (f.getType().isPrimitive()) {
                 Object wrapped = null;
-                Class<?> clazz = f.getType();
+                final Class<?> clazz = f.getType();
 
                 try {
                     f.setAccessible(true);
@@ -40,6 +48,7 @@ public class Mapper {
 
                     retVal.put(f.getName(), wrapped);
                 } catch (IllegalAccessException e) {
+                    LOG.error("Illegal access for field " + f.getName(), e);
                 } finally {
                     f.setAccessible(access);
                 }
@@ -49,6 +58,7 @@ public class Mapper {
                     f.setAccessible(true);
                     retVal.put(f.getName(), f.get(param));
                 } catch (IllegalAccessException e) {
+                    LOG.error("Illegal access for field " + f.getName(), e);
                 } finally {
                     f.setAccessible(access);
                 }
