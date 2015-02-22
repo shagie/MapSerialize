@@ -67,7 +67,7 @@ public class Mapper {
     }
 
     /**
-     * Exgtract object associated with the field
+     * Extract object associated with the field
      * @param param object with the fields
      * @param f field to be extracted
      * @return value associated with the field
