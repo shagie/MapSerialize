@@ -18,6 +18,7 @@ package org.shagie.util.mapserializer;
 
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
@@ -99,6 +100,27 @@ public class MapperTest {
         assertTrue(result.containsKey("newName"), "renamed field not found");
         assertEquals(result.get("newName"), "foo", "new name not found");
         assertEquals(result.get("field1"), 1);
+    }
+
+    @Test
+    public void testMappable() {
+        class TestInner implements Mappable {
+            int field1;
+
+            public TestInner(int arg1) { field1 = arg1; }
+
+            public Map<String, Object> toMap() {
+                Map<String, Object> rv = new HashMap<String, Object>();
+                rv.put("foo", "bar");
+                return rv;
+            }
+        }
+
+        Mapper m= new Mapper();
+        Map<String, Object> result = m.toMap(new TestInner(42));
+        assertTrue(result.containsKey("foo"));
+        assertFalse(result.containsKey("field1"));
+        assertEquals("bar", result.get("foo"));
     }
 
 }

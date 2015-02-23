@@ -44,6 +44,8 @@ public class Mapper {
     public Map<String, Object> toMap(final Object param) {
         if (param == null) {
             return null;
+        } else if (param instanceof Mappable) {
+            return ((Mappable)param).toMap();
         }
 
         Map<String, Object> retVal = new LinkedHashMap<String, Object>();
